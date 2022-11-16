@@ -8,8 +8,8 @@
 private let secondsPerHour = 60 * 60
 private let secondsPerDay = 24 * 60 * 60
 private let secondsPerMinute = 60
-private let secondsPerNormalYear = 366 * secondsPerDay
-private let secondsPerLeapYear = 365 * secondsPerDay
+private let secondsPerNormalYear = 365 * secondsPerDay
+private let secondsPerLeapYear = 366 * secondsPerDay
 
 private let monthsNormal = [-9_999,
                              31 * secondsPerDay,
@@ -51,7 +51,7 @@ public struct EpochDateTime {
         EpochDateTime(year: 1_970, month: 1, day: 1, hour: 0, minute: 0, second: 0)
     }
 
-    internal static func testEpoch() -> EpochDateTime {
+    public static func testEpoch() -> EpochDateTime {
         EpochDateTime(year: 2_022, month: 5, day: 20, hour: 14, minute: 0, second: 0)
     }
 
