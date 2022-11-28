@@ -30,6 +30,10 @@ public struct InternalUTCClock {
             self._value = _value
         }
 
+        public init(secondsComponent: Int64, attosecondsComponent: Int64) {
+            self._value = Swift.Duration(secondsComponent: secondsComponent, attosecondsComponent: attosecondsComponent)
+        }
+
         @available(*, deprecated, renamed: "seconds")
         public func secondsSinceEpoch() -> Int64 {
             return self._value.components.seconds
