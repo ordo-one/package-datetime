@@ -15,12 +15,18 @@ import BenchmarkSupport
 func benchmarks() {
 
     Benchmark.defaultDesiredDuration = .seconds(2)
-    Benchmark.defaultDesiredIterations = 1_000
+    Benchmark.defaultDesiredIterations = 10_000
     Benchmark.defaultThroughputScalingFactor = .kilo
 
     Benchmark("InternalUTCClock.now") { benchmark in
         for _ in 0 ..< benchmark.throughputScalingFactor.rawValue {
             BenchmarkSupport.blackHole(InternalUTCClock.now)
+        }
+    }
+
+    Benchmark("BenchmarkClock.now") { benchmark in
+        for _ in 0 ..< benchmark.throughputScalingFactor.rawValue {
+            BenchmarkSupport.blackHole(BenchmarkClock.now)
         }
     }
 
