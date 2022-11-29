@@ -105,8 +105,8 @@ extension BenchmarkClock: Clock {
         guard result == 0 else {
             fatalError("Failed to get current time in clock_gettime(), errno = \(errno)")
         }
-        let seconds = Int64(result.tv_sec)
-        let attoseconds = Int64(result.tv_nsec) * 1_000_000_000
+        let seconds = Int64(timespec.tv_sec)
+        let attoseconds = Int64(timespec.tv_nsec) * 1_000_000_000
 
         return BenchmarkClock.Instant(_value: Duration(secondsComponent: Int64(seconds),
                                                        attosecondsComponent: Int64(attoseconds)))
