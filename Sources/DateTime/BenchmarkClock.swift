@@ -105,8 +105,11 @@ extension BenchmarkClock: Clock {
         guard result == 0 else {
             fatalError("Failed to get current time in clock_gettime(), errno = \(errno)")
         }
+        let seconds = Int64(resolution.tv_sec)
+        let attoseconds = Int64(resolution.tv_nsec) * 1_000_000_000
 
-        return UInt64(Int64(timespec.tv_sec) * 1_000_000_000 + Int64(timespec.tv_nsec))
+        return BenchmarkClock.Instant(_value: Duration(secondsComponent: Int64(seconds),
+                                                       attosecondsComponent: Int64(attoseconds)))
 #else
 #error("Unsupported Platform")
 #endif
