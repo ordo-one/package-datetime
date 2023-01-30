@@ -14,7 +14,6 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "0.4.2"))
     ],
     targets: [
         .target(
@@ -24,16 +23,6 @@ let package = Package(
         .testTarget(
             name: "DateTimeTests",
             dependencies: ["DateTime"]
-        ),
-
-        // Benchmark targets
-        .executableTarget(
-            name: "Clocks",
-            dependencies: [
-                .product(name: "BenchmarkSupport", package: "package-benchmark"),
-                "DateTime"
-            ],
-            path: "Benchmarks/Clocks"
         )
     ]
 )
