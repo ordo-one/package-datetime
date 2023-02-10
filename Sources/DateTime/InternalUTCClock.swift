@@ -59,14 +59,6 @@ private extension String {
         }
         return "".padding(toLength: toPad, withPad: "0", startingAt: 0) + self
     }
-
-    func padMicroseconds(_ padding: Int = 6) -> String {
-        let toPad = padding - count
-        if toPad < 1 {
-            return self
-        }
-        return self.padding(toLength: padding, withPad: "0", startingAt: 0)
-    }
 }
 
 extension InternalUTCClock.Instant: CustomStringConvertible {
@@ -81,7 +73,7 @@ extension InternalUTCClock.Instant: CustomStringConvertible {
         \(String(epoch.hour).pad()):\
         \(String(epoch.minute).pad()):\
         \(String(epoch.second).pad()).\
-        \(String(attoseconds() / 1_000_000_000_000).padMicroseconds())
+        \(String(attoseconds() / 1_000_000_000_000).pad(6))
         """
     }
 }

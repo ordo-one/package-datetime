@@ -48,23 +48,26 @@ final class DateTimeTests: XCTestCase {
         // results.
     }
 
-    func testOutput() throws {
-        let now = InternalUTCClock.now
-        var description: String
-        var instant: InternalUTCClock.Instant
-        var fractionsOfSeconds: String.SubSequence
+    func testFormatting() throws {
+        func testFormat(attoseconds: Int64, expected: String) {
+            let now = InternalUTCClock.now
+            let dropCount = "2022-03-10 14:15:56.".count
+            var description: String
+            var instant: InternalUTCClock.Instant
+            var fractionsOfSeconds: String.SubSequence
 
-        instant = InternalUTCClock.Instant(secondsComponent: now.seconds(), attosecondsComponent: 12_345)
-        description = "\(instant)"
-        fractionsOfSeconds = description.dropFirst("2022-03-10 14:15:56.".count)
-        XCTAssert(fractionsOfSeconds == "000000")
+            instant = InternalUTCClock.Instant(secondsComponent: now.seconds(), attosecondsComponent: attoseconds)
+            description = "\(instant)"
+            fractionsOfSeconds = description.dropFirst(dropCount)
+            XCTAssert(fractionsOfSeconds == expected, "Got \(fractionsOfSeconds) Expected \(expected)")
 
-        instant = InternalUTCClock.Instant(secondsComponent: now.seconds(),
-                                           attosecondsComponent: 123_456_000_000_000_000)
-        description = "\(instant)"
-        fractionsOfSeconds = description.dropFirst("2022-03-10 14:15:56.".count)
-        XCTAssert(fractionsOfSeconds == "123456")
+//            print("\(now)")
+//            print("Got \(fractionsOfSeconds) Expected \(expected)")
+        }
 
-        print("\(instant)")
+        testFormat(attoseconds: 12_345, expected: "000000")
+        testFormat(attoseconds: 000_456_000_000_000_000, expected: "000456")
+        testFormat(attoseconds: 123_456_000_000_000_000, expected: "123456")
+        testFormat(attoseconds: 123_000_000_000_000_000, expected: "123000")
     }
 }
