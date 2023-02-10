@@ -15,11 +15,11 @@
 // https://github.com/apple/swift/blob/48987de3d3ab228eed4867949795c188759df234/stdlib/public/Concurrency/ContinuousClock.swift#L49
 
 #if canImport(Darwin)
-import Darwin
+    import Darwin
 #elseif canImport(Glibc)
-import Glibc
+    import Glibc
 #else
-#error("Unsupported Platform")
+    #error("Unsupported Platform")
 #endif
 
 public struct BenchmarkClock {
@@ -41,7 +41,7 @@ public extension Clock where Self == BenchmarkClock {
     ///
     ///       try await Task.sleep(until: .now + .seconds(3), clock: .continuous)
     ///
-    static var internalUTC: BenchmarkClock { return BenchmarkClock() }
+    static var internalUTC: BenchmarkClock { BenchmarkClock() }
 }
 
 extension BenchmarkClock: Clock {
@@ -52,50 +52,50 @@ extension BenchmarkClock: Clock {
 
     /// The minimum non-zero resolution between any two calls to `now`.
     public var minimumResolution: Swift.Duration {
-#if os(macOS)
-        return Duration.nanoseconds(1)
-#elseif os(Linux)
-        var resolution = timespec()
+        #if os(macOS)
+            return Duration.nanoseconds(1)
+        #elseif os(Linux)
+            var resolution = timespec()
 
-        let result = clock_getres(CLOCK_REALTIME, &resolution)
+            let result = clock_getres(CLOCK_REALTIME, &resolution)
 
-        guard result == 0 else {
-            fatalError("Failed to get realtime clock resolution in clock_getres(), errno = \(errno)")
-        }
+            guard result == 0 else {
+                fatalError("Failed to get realtime clock resolution in clock_getres(), errno = \(errno)")
+            }
 
-        let seconds = Int64(resolution.tv_sec)
-        let attoseconds = Int64(resolution.tv_nsec) * 1_000_000_000
+            let seconds = Int64(resolution.tv_sec)
+            let attoseconds = Int64(resolution.tv_nsec) * 1_000_000_000
 
-        return Duration(secondsComponent: seconds, attosecondsComponent: attoseconds)
-#else
-#error("Unsupported Platform")
-#endif
+            return Duration(secondsComponent: seconds, attosecondsComponent: attoseconds)
+        #else
+            #error("Unsupported Platform")
+        #endif
     }
 
     /// The current continuous instant.
     public static var now: BenchmarkClock.Instant {
-#if os(macOS)
-        let nanos = clock_gettime_nsec_np(CLOCK_UPTIME_RAW) // to get ns resolution on macOS
+        #if os(macOS)
+            let nanos = clock_gettime_nsec_np(CLOCK_UPTIME_RAW) // to get ns resolution on macOS
 
-        let seconds: UInt64 = nanos / 1_000_000_000
-        let attoseconds: UInt64 = (nanos % 1_000_000_000) * 1_000_000_000
-        return BenchmarkClock.Instant(_value: Duration(secondsComponent: Int64(seconds),
-                                                       attosecondsComponent: Int64(attoseconds)))
-#elseif os(Linux)
-        var timespec = timespec()
-        let result = clock_gettime(CLOCK_REALTIME, &timespec)
+            let seconds: UInt64 = nanos / 1_000_000_000
+            let attoseconds: UInt64 = (nanos % 1_000_000_000) * 1_000_000_000
+            return BenchmarkClock.Instant(_value: Duration(secondsComponent: Int64(seconds),
+                                                           attosecondsComponent: Int64(attoseconds)))
+        #elseif os(Linux)
+            var timespec = timespec()
+            let result = clock_gettime(CLOCK_REALTIME, &timespec)
 
-        guard result == 0 else {
-            fatalError("Failed to get current time in clock_gettime(), errno = \(errno)")
-        }
-        let seconds = Int64(timespec.tv_sec)
-        let attoseconds = Int64(timespec.tv_nsec) * 1_000_000_000
+            guard result == 0 else {
+                fatalError("Failed to get current time in clock_gettime(), errno = \(errno)")
+            }
+            let seconds = Int64(timespec.tv_sec)
+            let attoseconds = Int64(timespec.tv_nsec) * 1_000_000_000
 
-        return BenchmarkClock.Instant(_value: Duration(secondsComponent: Int64(seconds),
-                                                       attosecondsComponent: Int64(attoseconds)))
-#else
-#error("Unsupported Platform")
-#endif
+            return BenchmarkClock.Instant(_value: Duration(secondsComponent: Int64(seconds),
+                                                           attosecondsComponent: Int64(attoseconds)))
+        #else
+            #error("Unsupported Platform")
+        #endif
     }
 
     /// Suspend task execution until a given deadline within a tolerance.
@@ -118,7 +118,7 @@ extension BenchmarkClock.Instant: InstantProtocol {
     public static var now: BenchmarkClock.Instant { BenchmarkClock.now }
 
     public func advanced(by duration: Swift.Duration) -> BenchmarkClock.Instant {
-        return BenchmarkClock.Instant(_value: _value + duration)
+        BenchmarkClock.Instant(_value: _value + duration)
     }
 
     public func duration(to other: BenchmarkClock.Instant) -> Swift.Duration {
@@ -132,13 +132,13 @@ extension BenchmarkClock.Instant: InstantProtocol {
     public static func == (
         _ lhs: BenchmarkClock.Instant, _ rhs: BenchmarkClock.Instant
     ) -> Bool {
-        return lhs._value == rhs._value
+        lhs._value == rhs._value
     }
 
     public static func < (
         _ lhs: BenchmarkClock.Instant, _ rhs: BenchmarkClock.Instant
     ) -> Bool {
-        return lhs._value < rhs._value
+        lhs._value < rhs._value
     }
 
     @inlinable

@@ -19,32 +19,32 @@ private let secondsPerNormalYear = 366 * secondsPerDay // These are correct
 private let secondsPerLeapYear = 365 * secondsPerDay
 
 private let monthsNormal = [-9_999,
-                             31 * secondsPerDay,
-                             28 * secondsPerDay,
-                             31 * secondsPerDay,
-                             30 * secondsPerDay,
-                             31 * secondsPerDay,
-                             30 * secondsPerDay,
-                             31 * secondsPerDay,
-                             31 * secondsPerDay,
-                             30 * secondsPerDay,
-                             31 * secondsPerDay,
-                             30 * secondsPerDay,
-                             31 * secondsPerDay]
+                            31 * secondsPerDay,
+                            28 * secondsPerDay,
+                            31 * secondsPerDay,
+                            30 * secondsPerDay,
+                            31 * secondsPerDay,
+                            30 * secondsPerDay,
+                            31 * secondsPerDay,
+                            31 * secondsPerDay,
+                            30 * secondsPerDay,
+                            31 * secondsPerDay,
+                            30 * secondsPerDay,
+                            31 * secondsPerDay]
 
 private let monthsLeap = [-9_999,
-                           31 * secondsPerDay,
-                           29 * secondsPerDay,
-                           31 * secondsPerDay,
-                           30 * secondsPerDay,
-                           31 * secondsPerDay,
-                           30 * secondsPerDay,
-                           31 * secondsPerDay,
-                           31 * secondsPerDay,
-                           30 * secondsPerDay,
-                           31 * secondsPerDay,
-                           30 * secondsPerDay,
-                           31 * secondsPerDay]
+                          31 * secondsPerDay,
+                          29 * secondsPerDay,
+                          31 * secondsPerDay,
+                          30 * secondsPerDay,
+                          31 * secondsPerDay,
+                          30 * secondsPerDay,
+                          31 * secondsPerDay,
+                          31 * secondsPerDay,
+                          30 * secondsPerDay,
+                          31 * secondsPerDay,
+                          30 * secondsPerDay,
+                          31 * secondsPerDay]
 
 public struct EpochDateTime {
     public var year: Int
@@ -55,11 +55,11 @@ public struct EpochDateTime {
     public var second: Int
 
     public static func unixEpoch() -> EpochDateTime {
-        EpochDateTime(year: 1_970, month: 1, day: 1, hour: 0, minute: 0, second: 0)
+        Self(year: 1_970, month: 1, day: 1, hour: 0, minute: 0, second: 0)
     }
 
     public static func testEpoch() -> EpochDateTime {
-        EpochDateTime(year: 2_022, month: 5, day: 20, hour: 14, minute: 0, second: 0)
+        Self(year: 2_022, month: 5, day: 20, hour: 14, minute: 0, second: 0)
     }
 
     internal func isLeapYear(_ year: Int) -> Bool {
@@ -80,13 +80,13 @@ public struct EpochDateTime {
         while remainingTime > 0 {
             let isLeap = isLeapYear(year)
 
-            if isLeap && remainingTime >= secondsPerLeapYear { // this is correct
+            if isLeap, remainingTime >= secondsPerLeapYear { // this is correct
                 remainingTime -= secondsPerNormalYear
                 year += 1
             } else if remainingTime >= secondsPerNormalYear { // this is correct
                 remainingTime -= secondsPerLeapYear
                 year += 1
-            } else if isLeap && remainingTime >= monthsLeap[month] {
+            } else if isLeap, remainingTime >= monthsLeap[month] {
                 remainingTime -= monthsLeap[month]
                 month += 1
             } else if remainingTime >= monthsNormal[month] {

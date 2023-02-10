@@ -31,24 +31,51 @@ public struct InternalUTCClock {
         }
 
         public init(secondsComponent: Int64, attosecondsComponent: Int64) {
-            self._value = Swift.Duration(secondsComponent: secondsComponent, attosecondsComponent: attosecondsComponent)
+            _value = Swift.Duration(secondsComponent: secondsComponent, attosecondsComponent: attosecondsComponent)
         }
 
         @available(*, deprecated, renamed: "seconds")
         public func secondsSinceEpoch() -> Int64 {
-            return self._value.components.seconds
+            _value.components.seconds
         }
 
         public func seconds() -> Int64 {
-            return self._value.components.seconds
+            _value.components.seconds
         }
-        
+
         public func attoseconds() -> Int64 {
-            return self._value.components.attoseconds
+            _value.components.attoseconds
         }
     }
 
     public init() {}
+}
+
+private extension String {
+    func pad(_ padding: Int = 2) -> String {
+        let toPad = padding - count
+        if toPad < 1 {
+            return self
+        }
+        return "".padding(toLength: toPad, withPad: "0", startingAt: 0) + self
+    }
+}
+
+extension InternalUTCClock.Instant: CustomStringConvertible {
+    public var description: String {
+        var epoch = EpochDateTime.unixEpoch()
+        epoch.convert(timestamp: Int(seconds()))
+
+        return """
+        \(epoch.year)-\
+        \(String(epoch.month).pad())-\
+        \(String(epoch.day).pad()) \
+        \(String(epoch.hour).pad()):\
+        \(String(epoch.minute).pad()):\
+        \(String(epoch.second).pad()).\
+        \(String(attoseconds() / 1_000_000_000_000)) // output with microseconds
+        """
+    }
 }
 
 public extension Clock where Self == InternalUTCClock {
@@ -57,7 +84,7 @@ public extension Clock where Self == InternalUTCClock {
     ///
     ///       try await Task.sleep(until: .now + .seconds(3), clock: .continuous)
     ///
-    static var internalUTC: InternalUTCClock { return InternalUTCClock() }
+    static var internalUTC: InternalUTCClock { InternalUTCClock() }
 }
 
 extension InternalUTCClock: Clock {
@@ -117,7 +144,7 @@ extension InternalUTCClock.Instant: InstantProtocol {
     public static var now: InternalUTCClock.Instant { InternalUTCClock.now }
 
     public func advanced(by duration: Swift.Duration) -> InternalUTCClock.Instant {
-        return InternalUTCClock.Instant(_value: _value + duration)
+        InternalUTCClock.Instant(_value: _value + duration)
     }
 
     public func duration(to other: InternalUTCClock.Instant) -> Swift.Duration {
@@ -131,13 +158,13 @@ extension InternalUTCClock.Instant: InstantProtocol {
     public static func == (
         _ lhs: InternalUTCClock.Instant, _ rhs: InternalUTCClock.Instant
     ) -> Bool {
-        return lhs._value == rhs._value
+        lhs._value == rhs._value
     }
 
     public static func < (
         _ lhs: InternalUTCClock.Instant, _ rhs: InternalUTCClock.Instant
     ) -> Bool {
-        return lhs._value < rhs._value
+        lhs._value < rhs._value
     }
 
     @inlinable

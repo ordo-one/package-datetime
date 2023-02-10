@@ -6,6 +6,7 @@
 //
 // http://www.apache.org/licenses/LICENSE-2.0
 
+import Darwin
 @testable import DateTime
 import XCTest
 
@@ -20,11 +21,15 @@ final class DateTimeTests: XCTestCase {
         let time2 = InternalUTCClock().measure {
             _ = 47
         }
-        print("InternalUTCClock Elapsed time in nanoseconds for empty closure \(time2.components.attoseconds / 1_000_000_000)")
+        print("""
+              InternalUTCClock Elapsed time in nanoseconds for empty closure \
+              \(time2.components.attoseconds / 1_000_000_000)
+              """)
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
     }
+
     func testBenchmarkClock() throws {
         let time = BenchmarkClock().measure {
             print("BenchmarkClock Time now: \(BenchmarkClock.now)")
@@ -35,7 +40,10 @@ final class DateTimeTests: XCTestCase {
         let time2 = BenchmarkClock().measure {
             _ = 47
         }
-        print("BenchmarkClock Elapsed time in nanoseconds for empty closure \(time2.components.attoseconds / 1_000_000_000)")
+        print("""
+              BenchmarkClock Elapsed time in nanoseconds for empty closure \
+              \(time2.components.attoseconds / 1_000_000_000)
+              """)
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
