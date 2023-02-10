@@ -22,7 +22,7 @@ final class DateTimeTests: XCTestCase {
         }
         print("""
         InternalUTCClock Elapsed time in nanoseconds for empty closure \
-        \(time2.components.attoseconds / 1_000_000_000)
+        \(time2.nanoseconds())
         """)
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
@@ -41,7 +41,7 @@ final class DateTimeTests: XCTestCase {
         }
         print("""
         BenchmarkClock Elapsed time in nanoseconds for empty closure \
-        \(time2.components.attoseconds / 1_000_000_000)
+        \(time2.nanoseconds())
         """)
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
