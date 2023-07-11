@@ -91,6 +91,13 @@ extension EpochDateTime {
 }
 
 final class EpochDateTimeTests: XCTestCase {
+    func test1672556400() throws {
+        var epoch = EpochDateTime.unixEpoch()
+        epoch.convert(timestamp: 1672556400)
+        XCTAssertEqual(epoch.year, 2023)
+        XCTAssertEqual(epoch.month, 1)
+        XCTAssertEqual(epoch.day, 1)
+    }
 
     func testPerf() throws {
         let clock = ContinuousClock()
