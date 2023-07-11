@@ -12,7 +12,13 @@
 
 // Adopted from C implementation at https://www.quora.com/How-do-I-convert-epoch-time-to-a-date-manually
 
+#if canImport(Darwin)
 import Darwin
+#endif
+
+#if canImport(Glibc)
+import Glibc
+#endif
 
 public struct EpochDateTime {
     public var year: Int
