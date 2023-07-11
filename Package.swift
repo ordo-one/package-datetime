@@ -24,6 +24,10 @@ let package = Package(
         .testTarget(
             name: "DateTimeTests",
             dependencies: ["DateTime"]
+        ),
+        .testTarget(
+            name: "EpochDateTimeTests",
+            dependencies: ["DateTime"]
         )
     ]
 )

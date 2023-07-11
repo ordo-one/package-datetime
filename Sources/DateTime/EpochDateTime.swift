@@ -12,39 +12,7 @@
 
 // Adopted from C implementation at https://www.quora.com/How-do-I-convert-epoch-time-to-a-date-manually
 
-private let secondsPerHour = 60 * 60
-private let secondsPerDay = 24 * 60 * 60
-private let secondsPerMinute = 60
-private let secondsPerNormalYear = 365 * secondsPerDay
-private let secondsPerLeapYear = 366 * secondsPerDay
-
-private let monthsNormal = [-9_999,
-                            31 * secondsPerDay,
-                            28 * secondsPerDay,
-                            31 * secondsPerDay,
-                            30 * secondsPerDay,
-                            31 * secondsPerDay,
-                            30 * secondsPerDay,
-                            31 * secondsPerDay,
-                            31 * secondsPerDay,
-                            30 * secondsPerDay,
-                            31 * secondsPerDay,
-                            30 * secondsPerDay,
-                            31 * secondsPerDay]
-
-private let monthsLeap = [-9_999,
-                          31 * secondsPerDay,
-                          29 * secondsPerDay,
-                          31 * secondsPerDay,
-                          30 * secondsPerDay,
-                          31 * secondsPerDay,
-                          30 * secondsPerDay,
-                          31 * secondsPerDay,
-                          31 * secondsPerDay,
-                          30 * secondsPerDay,
-                          31 * secondsPerDay,
-                          30 * secondsPerDay,
-                          31 * secondsPerDay]
+import Darwin
 
 public struct EpochDateTime {
     public var year: Int
@@ -62,49 +30,16 @@ public struct EpochDateTime {
         Self(year: 2_022, month: 5, day: 20, hour: 14, minute: 0, second: 0)
     }
 
-    internal func isLeapYear(_ year: Int) -> Bool {
-        if (year % 4) != 0 {
-            return false
-        } else if (year % 100) != 0 {
-            return true
-        } else if (year % 400) != 0 {
-            return false
-        }
-        return true
-    }
-
     /// Converts a timestamp in seconds to the appropriate year/month/day/hour/minute/second from the Unix epoch
     public mutating func convert(timestamp: Int) {
-        var remainingTime = timestamp
-
-        while remainingTime > 0 {
-            let isLeap = isLeapYear(year)
-
-            if isLeap, remainingTime >= secondsPerLeapYear {
-                remainingTime -= secondsPerLeapYear
-                year += 1
-            } else if !isLeap, remainingTime >= secondsPerNormalYear {
-                remainingTime -= secondsPerNormalYear
-                year += 1
-            } else if isLeap, remainingTime >= monthsLeap[month] {
-                remainingTime -= monthsLeap[month]
-                month += 1
-            } else if !isLeap, remainingTime >= monthsNormal[month] {
-                remainingTime -= monthsNormal[month]
-                month += 1
-            } else if remainingTime >= secondsPerDay {
-                remainingTime -= secondsPerDay
-                day += 1
-            } else if remainingTime >= secondsPerHour {
-                remainingTime -= secondsPerHour
-                hour += 1
-            } else if remainingTime >= secondsPerMinute {
-                remainingTime -= secondsPerMinute
-                minute += 1
-            } else {
-                second = remainingTime
-                remainingTime = 0
-            }
-        }
+        var timestamp = timestamp
+        var tm = tm()
+        gmtime_r(&timestamp, &tm)
+        year = Int(tm.tm_year + 1900)
+        month = Int(tm.tm_mon + 1)
+        day = Int(tm.tm_mday)
+        hour = Int(tm.tm_hour)
+        minute = Int(tm.tm_min)
+        second = Int(tm.tm_sec)
     }
 }
