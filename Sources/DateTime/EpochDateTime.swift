@@ -10,8 +10,6 @@
 // unixEpoch.convert(timestamp: 1653047882)
 // print("\(unixEpoch)")
 
-// Adopted from C implementation at https://www.quora.com/How-do-I-convert-epoch-time-to-a-date-manually
-
 #if canImport(Darwin)
 import Darwin
 #endif
@@ -28,11 +26,11 @@ public struct EpochDateTime {
     public var minute: Int
     public var second: Int
 
-    public static func unixEpoch() -> EpochDateTime {
+    public static func unixEpoch() -> Self {
         Self(year: 1_970, month: 1, day: 1, hour: 0, minute: 0, second: 0)
     }
 
-    public static func testEpoch() -> EpochDateTime {
+    public static func testEpoch() -> Self {
         Self(year: 2_022, month: 5, day: 20, hour: 14, minute: 0, second: 0)
     }
 
