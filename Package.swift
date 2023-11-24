@@ -1,12 +1,11 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.9
 
 import PackageDescription
 
 let package = Package(
     name: "package-datetime",
     platforms: [
-        .macOS(.v13),
-        .iOS(.v16)
+        .macOS(.v14),
     ],
     products: [
         .library(
